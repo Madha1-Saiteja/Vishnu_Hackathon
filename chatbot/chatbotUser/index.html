@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-lg bg-white shadow-lg rounded-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="bg-red-600 text-white text-center py-4 text-xl font-semibold">
+            Medical Chatbot
+        </div>
+
+        <!-- Chat Box -->
+        <div id="chat-box" class="h-96 p-4 overflow-y-auto space-y-3 flex flex-col">
+            <!-- Messages will be dynamically inserted here -->
+        </div>
+
+        <!-- Input Section -->
+        <div class="flex items-center p-3 border-t">
+            <input type="text" id="user-input" placeholder="Ask me something..."
+                class="flex-1 px-4 py-2 border rounded-full outline-none focus:ring-2 focus:ring-red-500"
+                onkeydown="handleKeyPress(event)">
+            <button onclick="sendMessage()" class="ml-2 px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function formatText(text) {
+            // Convert **bold** text to <strong>bold</strong>
+            return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        }
+
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const message = userInput.value.trim();
+
+            if (!message) return;
+
+            // Append user message
+            chatBox.innerHTML += `
+                <div class="self-end bg-red-600 text-white px-4 py-2 rounded-lg w-max max-w-xs md:max-w-sm lg:max-w-md animate-fadeIn break-words">
+                    ${formatText(message)}
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            userInput.value = '';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                const botResponse = data.response ? formatText(data.response) : "Sorry, I couldn't understand.";
+
+                // Append bot response
+                chatBox.innerHTML += `
+                    <div class="self-start bg-red-100 text-red-600 px-4 py-2 rounded-lg w-max max-w-xs md:max-w-sm lg:max-w-md animate-fadeIn break-words">
+                        ${botResponse}
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (error) {
+                chatBox.innerHTML += `
+                    <div class="self-start bg-red-100 text-red-600 px-4 py-2 rounded-lg w-max max-w-xs md:max-w-sm lg:max-w-md animate-fadeIn break-words">
+                        Network error. Please try again.
+                    </div>`;
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</body>
+</html>
