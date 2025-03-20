@@ -89,7 +89,7 @@ def extract_key_info(text):
         # Handle empty or non-JSON responses
         if not result or result.isspace():
             logger.warning("Gemini returned empty response")
-            return local_extract_key_info(text)  # Fallback to local processing
+            return extract_key_info(text)  # Fallback to local processing
         
         # Try parsing as JSON
         try:
