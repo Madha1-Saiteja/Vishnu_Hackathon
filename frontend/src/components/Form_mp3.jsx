@@ -11,7 +11,6 @@ function Form_mp3() {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-
     if (selectedFile) {
       const allowedTypes = ["audio/mp3", "audio/mpeg", "audio/wav", "audio/ogg"];
       if (!allowedTypes.includes(selectedFile.type)) {
@@ -19,36 +18,36 @@ function Form_mp3() {
         setFile(null);
         return;
       }
-
+      console.log('Selected audio file:', selectedFile);
       setFile(selectedFile);
       setError("");
     }
   };
 
-  const handleUpload = async(e) => {
+  const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
-      alert("Please select a valid MP3, WAV, or OGG file.");
+      setError("Please select a valid MP3, WAV, or OGG file.");
       return;
     }
- 
+
     const formData = new FormData();
     formData.append("file", file);
     setLoading(true);
     setError("");
-    
+
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/upload/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("response:---",response)
+      console.log("Upload response:", response.data);
       if (response.status === 200) {
-        setPdfUrl(`http://127.0.0.1:8000/media/transcription.pdf`); // Update PDF URL
+        setPdfUrl(`http://127.0.0.1:8000/media/transcription.pdf`);
       } else {
         setError("File uploaded but no transcript found.");
       }
     } catch (error) {
-      console.error("File upload failed:", error);
+      console.error("File upload failed:", error.response?.data || error.message);
       setError("File upload failed.");
     } finally {
       setLoading(false);
@@ -61,10 +60,7 @@ function Form_mp3() {
     } else {
       setError("Transcript not available yet.");
     }
-  }
-
-  
-  console.log(pdfUrl)
+  };
 
   return (
     <div className="max-w-md mx-auto mt-40 border-2 border-red-400 p-6 bg-white rounded-lg shadow-lg">
@@ -101,10 +97,11 @@ function Form_mp3() {
           onClick={handleViewPdf}
           className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition duration-200"
         >
-  View Transcript
+          View Transcript
         </button>
       )}
     </div>
   );
 }
+
 export default Form_mp3;
