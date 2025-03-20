@@ -9,58 +9,84 @@ const Dashboard = ({ result }) => {
     );
   }
 
-  // Sort word frequency by percentage (descending) and take top 10
-  const sortedAnalysis = Object.entries(result.analysis)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10);
+  const { key_info, prediction } = result;
+  console.log('Result:', result);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Document Analysis Results</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Patient Overview</h2>
 
-      {/* Extracted Text */}
+      {/* Patient Information */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">Extracted Text</h3>
-        <div className="bg-gray-50 p-4 rounded-md max-h-72 overflow-y-auto text-sm text-gray-600">
-          <pre className="">{result.text}</pre>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Patient Details</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-md">
+          <p><span className="font-medium">Name:</span> {key_info?.patient_name || 'Not Provided'}</p>
+          <p><span className="font-medium">Age:</span> {key_info?.age || 'Not Provided'}</p>
+          <p><span className="font-medium">Gender:</span> {key_info?.gender || 'Not Provided'}</p>
+          <p>
+            <span className="font-medium">Conditions:</span>{' '}
+            {key_info?.diseases?.join(', ') || 'Not Provided'}
+          </p>
         </div>
       </div>
 
-      {/* Word Frequency */}
-      {/* <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">Top 10 Word Frequencies (%)</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {sortedAnalysis.map(([word, percent]) => (
-            <div key={word} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-              <span className="font-medium text-gray-700">{word}</span>
-              <span className="text-blue-600">{percent.toFixed(2)}%</span>
-            </div>
-          ))}
-        </div>
-      </div> */}
+      {/* Summary */}
+      <div className="mb-6">
+  <h3 className="text-lg font-semibold text-gray-700 mb-2">Health Summary</h3>
+  <div className="bg-blue-50 p-4 rounded-md text-gray-700 border-l-4 border-blue-500">
+    {(() => {
+      try {
+        // Parse the summary JSON string
+        const summaryData = JSON.parse(key_info?.summary);
+
+        // Render key-value pairs
+        return (
+          <ul>
+            {Object.entries(summaryData).map(([key, value]) => (
+              <li key={key}>
+                <span className="font-medium capitalize">{key.replace('_', ' ')}:</span>{" "}
+                {Array.isArray(value) ? value.join(', ') : value}
+              </li>
+            ))}
+          </ul>
+        );
+      } catch (error) {
+        // If parsing fails, render the raw summary text
+        return <p>{key_info?.summary || 'No summary available'}</p>;
+      }
+    })()}
+  </div>
+</div>
 
       {/* Prediction */}
-      {result.prediction && (
+      {prediction && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Predicted Outcome</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Health Assessment</h3>
           <div className="bg-gray-50 p-4 rounded-md">
             <p className="text-gray-700">
-              <span className="font-medium">Outcome: </span>
-              <span className={result.prediction.outcome === 'positive' ? 'text-green-600' : 'text-red-600'}>
-                {result.prediction.outcome}
+              <span className="font-medium">Risk Level: </span>
+              <span className={prediction.outcome === 'positive' ? 'text-green-600' : 'text-red-600'}>
+                {prediction.outcome === 'positive' ? 'Low' : 'High'}
               </span>
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Confidence: </span>
-              <span className="text-blue-600">{result.prediction.confidence.toFixed(2)}%</span>
+              <span className="text-blue-600">{prediction.confidence.toFixed(2)}%</span>
             </p>
-            {/* Progress bar for confidence */}
+            <p className="text-gray-700">
+              <span className="font-medium">Impact: </span>
+              {prediction.confidence > 70 
+                ? 'Significant concern requiring attention' 
+                : prediction.confidence > 50 
+                ? 'Moderate risk, monitor closely' 
+                : 'Low immediate concern'}
+            </p>
             <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
               <div
                 className={`h-2.5 rounded-full ${
-                  result.prediction.confidence > 70 ? 'bg-green-500' : 'bg-blue-500'
+                  prediction.confidence > 70 ? 'bg-red-500' : prediction.confidence > 50 ? 'bg-yellow-500' : 'bg-green-500'
                 }`}
-                style={{ width: `${result.prediction.confidence}%` }}
+                style={{ width: `${prediction.confidence}%` }}
               ></div>
             </div>
           </div>

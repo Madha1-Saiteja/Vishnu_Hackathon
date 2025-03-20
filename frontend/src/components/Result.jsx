@@ -5,7 +5,7 @@ import Form_mp3 from './Form_mp3';
 function Result() {
     const [result, setResult] = useState(null); // State for document analysis result
   return (
-    <div>
+    <div className='pt-52 h-screen bg-red-300'>
         <div className="flex flex-col items-center justify-center space-y-4">
         {/* Audio Upload */}
         {/* <Form_mp3 /> */}

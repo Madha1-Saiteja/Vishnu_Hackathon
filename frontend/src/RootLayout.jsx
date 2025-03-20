@@ -14,7 +14,7 @@ function RootLayout() {
   return (
     <div>
       <Header />
-      <div className="min-h-screen relative mt-52">
+      <div className="min-h-screen relative">
         <Outlet />
         {/* Bot Icon */}
         <div

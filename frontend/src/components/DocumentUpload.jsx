@@ -10,7 +10,7 @@ const DocumentUpload = ({ setResult }) => {
     const selectedFile = e.target.files[0];
     console.log('Selected file:', selectedFile);
     setFile(selectedFile);
-    setError(null); // Reset error on new file selection
+    setError(null);
   };
 
   const handleUpload = async () => {
@@ -30,7 +30,7 @@ const DocumentUpload = ({ setResult }) => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload response:', response.data);
-      setResult(response.data); // This should now work as setResult is passed from parent
+      setResult(response.data);
     } catch (error) {
       const errorMsg = error.response?.data?.error || error.message;
       console.error('Upload failed:', errorMsg);
