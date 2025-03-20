@@ -13,7 +13,10 @@ from .utils import (
     generate_medical_notes, 
     generate_pdf, 
     process_document, 
-    predict_outcome
+    predict_outcome,
+    extract_key_info,
+    extract_medical_info,  # Add this function to utils.py
+    generate_short_notes  # Add this function to utils.py
 )
 
 warnings.simplefilter("ignore", UserWarning)
@@ -27,15 +30,12 @@ class AudioUploadView(APIView):
         if file_serializer.is_valid():
             file_serializer.save()
             audio_path = file_serializer.instance.file.path
-
-            # Generate perfect documentation
             transcription = transcribe_audio(audio_path)
             extracted_info, formatted_transcription, formatted_summary = generate_medical_notes(transcription)
             pdf_path = generate_pdf(formatted_transcription, formatted_summary)
-
             return Response({
                 "pdf_url": pdf_path,
-                "entities": extracted_info  # Optional: include extracted entities in response
+                "entities": extracted_info
             }, status=status.HTTP_200_OK)
         return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -65,26 +65,23 @@ class DocumentUploadView(APIView):
             for chunk in file_obj.chunks():
                 destination.write(chunk)
 
+        # Extract text from the uploaded document
         extracted_text = process_document(file_path)
         if extracted_text == "Unsupported file format":
             os.remove(file_path)
             return Response({"error": extracted_text}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Word frequency analysis
-        words = extracted_text.split()
-        total_words = len(words) or 1
-        word_freq = {}
-        for word in words:
-            word_freq[word] = word_freq.get(word, 0) + 1
-        percentages = {word: (count / total_words) * 100 for word, count in word_freq.items()}
+        # Extract key medical information using Gemini API
+        key_info = extract_key_info(extracted_text)
 
-        # Outcome prediction
-        prediction = predict_outcome(extracted_text)
+        # Generate a medical summary
+        medical_info = extract_medical_info(extracted_text)  # Add this function to utils.py
+        summary = generate_short_notes(medical_info)  # Add this function to utils.py
 
         os.remove(file_path)
 
         return Response({
-            "text": extracted_text,
-            "analysis": percentages,
-            "prediction": prediction
+            "key_info": key_info,
+            "medical_info": medical_info,
+            "summary": summary
         }, status=status.HTTP_200_OK)

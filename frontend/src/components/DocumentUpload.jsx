@@ -30,7 +30,7 @@ const DocumentUpload = ({ setResult }) => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload response:', response.data);
-      setResult(response.data);
+      setResult(response.data); // Pass the entire response to the parent component
     } catch (error) {
       const errorMsg = error.response?.data?.error || error.message;
       console.error('Upload failed:', errorMsg);

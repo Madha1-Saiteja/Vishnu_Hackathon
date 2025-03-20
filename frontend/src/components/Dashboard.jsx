@@ -17,7 +17,7 @@ const Dashboard = ({ result }) => {
       <h2 className="text-2xl font-bold mb-4 text-gray-800">Patient Overview</h2>
 
       {/* Patient Information */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">Patient Details</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-md">
           <p><span className="font-medium">Name:</span> {key_info?.patient_name || 'Not Provided'}</p>
@@ -28,35 +28,30 @@ const Dashboard = ({ result }) => {
             {key_info?.diseases?.join(', ') || 'Not Provided'}
           </p>
         </div>
+      </div> */}
+
+      {/* Medical Information */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Medical Information</h3>
+        <div className="bg-gray-50 p-4 rounded-md">
+          <ul>
+            {Object.entries(result.medical_info).map(([key, value]) => (
+              <li key={key} className='m-4'>
+                <span className="font-medium capitalize">{key.replace('_', ' ')}:</span>{' '}
+                {Array.isArray(value) && value.length > 0 ? value.join(', ') : "Not Provided"}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* Summary */}
       <div className="mb-6">
-  <h3 className="text-lg font-semibold text-gray-700 mb-2">Health Summary</h3>
-  <div className="bg-blue-50 p-4 rounded-md text-gray-700 border-l-4 border-blue-500">
-    {(() => {
-      try {
-        // Parse the summary JSON string
-        const summaryData = JSON.parse(key_info?.summary);
-
-        // Render key-value pairs
-        return (
-          <ul>
-            {Object.entries(summaryData).map(([key, value]) => (
-              <li key={key}>
-                <span className="font-medium capitalize">{key.replace('_', ' ')}:</span>{" "}
-                {Array.isArray(value) ? value.join(', ') : value}
-              </li>
-            ))}
-          </ul>
-        );
-      } catch (error) {
-        // If parsing fails, render the raw summary text
-        return <p>{key_info?.summary || 'No summary available'}</p>;
-      }
-    })()}
-  </div>
-</div>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Summary</h3>
+        <div className="bg-blue-50 p-4 rounded-md text-gray-700 border-l-4 border-blue-500">
+          <p>{result.summary || 'No summary available'}</p>
+        </div>
+      </div>
 
       {/* Prediction */}
       {prediction && (
