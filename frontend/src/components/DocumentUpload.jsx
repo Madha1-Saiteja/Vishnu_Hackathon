@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { MEDIDOC_API_URL } from '../config/api';
 
 const DocumentUpload = ({ setResult }) => {
   const [file, setFile] = useState(null);
@@ -26,7 +27,7 @@ const DocumentUpload = ({ setResult }) => {
     formData.append('document', file);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/upload-document/', formData, {
+      const response = await axios.post(`${MEDIDOC_API_URL}/api/upload-document/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload response:', response.data);

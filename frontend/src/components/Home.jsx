@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Link } from 'react-router-dom';
 import img1 from '../assets/vids/img1.jpg'
 import img2 from '../assets/vids/img2.jpg'
 import img3 from '../assets/vids/img3.jpg'
@@ -160,6 +161,11 @@ function FeaturesSection() {
       title: 'Medical Insights',
       description: 'Gain actionable insights from procedure data.',
     },
+    {
+      icon: <FaHeartbeat />,
+      title: 'Brain MRI Analysis',
+      description: 'Run tumor classification, Grad-CAM, and clinical MRI summaries.',
+    },
   ];
 
   return (
@@ -186,6 +192,31 @@ function FeaturesSection() {
             <p className="text-gray-600">{feature.description}</p>
           </motion.div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function BrainAIFeatureSection() {
+  return (
+    <section className="bg-gray-950 px-6 py-20 text-white">
+      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 rounded-[2rem] border border-white/10 bg-white/5 p-10 md:flex-row md:items-center">
+        <div className="max-w-3xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-400">
+            Expanded Capability
+          </p>
+          <h2 className="mt-4 text-4xl font-bold">Brain Tumor MRI Analyzer inside MediDoc AI</h2>
+          <p className="mt-4 text-lg text-white/80">
+            MediDoc AI now includes a dedicated brain MRI workflow for tumor classification,
+            explainability overlays, multilingual reporting, and clinical insight generation.
+          </p>
+        </div>
+        <Link
+          to="/brain-mri"
+          className="rounded-full bg-red-600 px-8 py-4 font-semibold text-white transition hover:bg-red-700"
+        >
+          Launch Brain MRI AI
+        </Link>
       </div>
     </section>
   );
@@ -503,6 +534,7 @@ function Home() {
       <main className="pt-16">
         <HeroSection />
         <FeaturesSection />
+        <BrainAIFeatureSection />
         <Videos />
         <HowItWorksSection />
         <TechnologySection />

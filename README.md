@@ -17,6 +17,11 @@ MediDoc AI is an innovative platform designed to automate surgical documentation
 - **Image**: ![Features](features.jpg)
 - **Purpose**: Offers a quick overview of the tools available for medical documentation and data management.
 
+### 2.1 Brain MRI Analysis
+- **Description**: MediDoc AI now includes a Brain MRI Analysis workflow powered by the deployed X-Brain backend.
+- **Action**: Open the `Brain MRI AI` route from the navigation bar, upload an MRI image, and view tumor classification, Grad-CAM images, and the clinical summary.
+- **Purpose**: Extends MediDoc AI with neuro-imaging support alongside transcription and document analysis.
+
 ### 3. Watching Tutorial Videos
 - **Description**: The "Watch Videos" section includes surgical procedure videos (e.g., "TOTAL KNEE REPLACEMENT") to assist users.
 - **Action**: Click on any video thumbnail to view relevant surgical demonstrations.
@@ -61,3 +66,19 @@ MediDoc AI is an innovative platform designed to automate surgical documentation
 
 ## Conclusion
 MediDoc AI streamlines surgical documentation with AI-driven tools, ensuring accuracy and efficiency. Follow the steps above to explore its features, upload documents, transcribe audio, and analyze reports effectively. The images are hosted in the repository root directory and should render on GitHub.
+
+## Frontend Deployment Notes
+
+The frontend now supports environment-based service URLs:
+
+- `VITE_MEDIDOC_API_URL` for the Django backend
+- `VITE_CHATBOT_API_URL` for the chatbot service
+- `VITE_BRAIN_API_URL` for the deployed brain MRI analysis backend
+
+For Vercel deployments, set these environment variables in the project settings and deploy the `frontend/` directory. A `vercel.json` rewrite file is included so client-side routes work correctly after deployment.
+
+## Backend and Chatbot Deployment Notes
+
+- `backend/.env.example` documents the Django settings needed for production hosts and CORS.
+- `chatbot/.env.example` documents the Gemini chatbot settings. The chatbot no longer depends on a hardcoded API key.
+- Add a real `GEMINI_API_KEY` in your deployment platform before starting the chatbot service.
