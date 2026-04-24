@@ -6,6 +6,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: python manage.py migrate && gunicorn backend.wsgi:application
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.1
       - key: DJANGO_DEBUG
         value: "false"
       - key: DJANGO_ALLOWED_HOSTS
@@ -24,6 +26,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.1
       - key: CHATBOT_DEBUG
         value: "false"
       - key: GEMINI_API_KEY
