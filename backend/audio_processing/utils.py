@@ -8,8 +8,6 @@ import pytesseract
 import requests
 from fpdf import FPDF
 from PIL import Image
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -19,17 +17,6 @@ GEMINI_API_URL = os.getenv(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
 )
 API_KEY = os.getenv("GEMINI_API_KEY", "")
-
-X_train = [
-    "fever infection pain",
-    "healthy recovery good",
-    "infection severe complications",
-]
-y_train = ["negative", "positive", "negative"]
-vectorizer = CountVectorizer()
-X_train_vec = vectorizer.fit_transform(X_train)
-model = MultinomialNB()
-model.fit(X_train_vec, y_train)
 
 _ASR_MODEL = None
 _NER_PIPELINE = None
@@ -238,13 +225,6 @@ def process_document(file_path):
     if ext in [".png", ".jpg", ".jpeg"]:
         return extract_text_from_image(file_path)
     return "Unsupported file format"
-
-
-def predict_outcome(text):
-    text_vec = vectorizer.transform([text])
-    prediction = model.predict(text_vec)[0]
-    probability = model.predict_proba(text_vec)[0]
-    return {"outcome": prediction, "confidence": max(probability) * 100}
 
 
 def extract_medical_info(text):
