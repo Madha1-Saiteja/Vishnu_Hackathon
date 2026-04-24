@@ -30,13 +30,18 @@ class AudioUploadView(APIView):
         if file_serializer.is_valid():
             file_serializer.save()
             audio_path = file_serializer.instance.file.path
-            transcription = transcribe_audio(audio_path)
-            extracted_info, formatted_transcription, formatted_summary = generate_medical_notes(transcription)
-            pdf_path = generate_pdf(formatted_transcription, formatted_summary)
-            return Response({
-                "pdf_url": pdf_path,
-                "entities": extracted_info
-            }, status=status.HTTP_200_OK)
+            try:
+                transcription = transcribe_audio(audio_path)
+                extracted_info, formatted_transcription, formatted_summary = generate_medical_notes(transcription)
+                pdf_path = generate_pdf(formatted_transcription, formatted_summary)
+                return Response({
+                    "pdf_url": pdf_path,
+                    "entities": extracted_info
+                }, status=status.HTTP_200_OK)
+            except RuntimeError as exc:
+                return Response({"error": str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            except Exception as exc:
+                return Response({"error": f"Audio processing failed: {exc}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DownloadPDFView(APIView):
@@ -72,11 +77,14 @@ class DocumentUploadView(APIView):
             return Response({"error": extracted_text}, status=status.HTTP_400_BAD_REQUEST)
 
         # Extract key medical information using Gemini API
-        key_info = extract_key_info(extracted_text)
-
-        # Generate a medical summary
-        medical_info = extract_medical_info(extracted_text)  # Add this function to utils.py
-        summary = generate_short_notes(medical_info)  # Add this function to utils.py
+        try:
+            key_info = extract_key_info(extracted_text)
+            medical_info = extract_medical_info(extracted_text)
+            summary = generate_short_notes(medical_info)
+        except RuntimeError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as exc:
+            return Response({"error": f"Document processing failed: {exc}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         os.remove(file_path)
 
