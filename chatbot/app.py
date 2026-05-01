@@ -1,17 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-import os
 
 app = Flask(__name__)
 CORS(app)
 
 # Correct API endpoint and API key
-GEMINI_API_URL = os.getenv(
-    "GEMINI_API_URL",
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-)
-API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+API_KEY = "AIzaSyC4yaO3324fq4XBJyxJ810EmBcFnIO9Jwk"  # Replace this with your actual API key
 
 # Prefix to enforce medical-related questions
 MEDICAL_PREFIX = (
@@ -23,9 +19,6 @@ MEDICAL_PREFIX = (
 
 # Function to send requests to the Gemini API
 def query_gemini(query):
-    if not API_KEY:
-        return {"error": "GEMINI_API_KEY is not configured"}
-
     headers = {
         "Content-Type": "application/json"
     }
@@ -62,7 +55,4 @@ def chat():
     return jsonify({"response": response_text})
 
 if __name__ == "__main__":
-    host = os.getenv("CHATBOT_HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", os.getenv("CHATBOT_PORT", "5000")))
-    debug = os.getenv("CHATBOT_DEBUG", "true").lower() == "true"
-    app.run(host=host, port=port, debug=debug)
+    app.run(debug=True)

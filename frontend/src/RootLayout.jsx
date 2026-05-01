@@ -3,7 +3,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { Outlet } from 'react-router-dom';
 import bot from './assets/bot.png';
-import { CHATBOT_API_URL } from './config/api';
 
 function RootLayout() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -78,7 +77,7 @@ async function sendMessage() {
   userInput.value = '';
 
   try {
-    const response = await fetch(`${CHATBOT_API_URL}/chat`, {
+    const response = await fetch('http://127.0.0.1:5000/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message })

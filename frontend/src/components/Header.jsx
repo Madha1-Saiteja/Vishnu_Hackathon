@@ -35,9 +35,6 @@ function Header() {
         <Link to="/analyze" className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
           Analyze report
         </Link>
-        <Link to="/brain-mri" className="bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-black">
-          Brain MRI AI
-        </Link>
         <Link to="/form">
           <button className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
             Transcribe

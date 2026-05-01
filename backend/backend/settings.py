@@ -11,19 +11,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-only')
-DEBUG = os.getenv('DJANGO_DEBUG', 'true').lower() == 'true'
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if host.strip()
-]
+SECRET_KEY = 'django-insecure-&uesh(!0u9e7nm)r@^loaxn8r=dh3jcbqp%7soh#ik&k7s-q@$'  # Replace in production
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Update for production
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,14 +47,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'backend.urls'
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'false').lower() == 'true'
+CORS_ALLOW_ALL_ORIGINS = False  # Keep this for security
 CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        'CORS_ALLOWED_ORIGINS',
-        'http://localhost:5175,http://localhost:5173,http://127.0.0.1:5175'
-    ).split(',')
-    if origin.strip()
+    "http://localhost:5175",  # Updated to match your frontend port
+    "http://localhost:5173",  # Updated to match your frontend port
+    "http://127.0.0.1:5175",  # Add this for consistency if you use 127.0.0.1
+    # Add production URLs later, e.g., "https://your-frontend.com"
 ]
 
 X_FRAME_OPTIONS = "ALLOWALL"  # Allows PDFs to be embedded in iframes

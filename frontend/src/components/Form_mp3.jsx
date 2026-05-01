@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { MEDIDOC_API_URL, MEDIA_BASE_URL } from "../config/api";
 
 function Form_mp3() {
   const [file, setFile] = useState(null);
@@ -38,12 +37,12 @@ function Form_mp3() {
     setError("");
 
     try {
-      const response = await axios.post(`${MEDIDOC_API_URL}/api/upload/`, formData, {
+      const response = await axios.post("http://127.0.0.1:8000/api/upload/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Upload response:", response.data);
       if (response.status === 200) {
-        setPdfUrl(`${MEDIA_BASE_URL}/media/transcription.pdf`);
+        setPdfUrl(`http://127.0.0.1:8000/media/transcription.pdf`);
       } else {
         setError("File uploaded but no transcript found.");
       }

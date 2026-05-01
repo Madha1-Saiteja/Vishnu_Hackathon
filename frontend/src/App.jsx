@@ -10,7 +10,6 @@ import PdfViewer from './components/PdfViewer';
 import DocumentUpload from './components/DocumentUpload'; // New component
 import Dashboard from './components/Dashboard'; // New component
 import Result from './components/Result';
-import BrainTumorAnalyzer from './components/BrainTumorAnalyzer';
 
 function App() {
   const browser = createBrowserRouter([
@@ -25,10 +24,6 @@ function App() {
         {
           path: '/analyze',
           element: <Result />
-        },
-        {
-          path: '/brain-mri',
-          element: <BrainTumorAnalyzer />,
         },
         {
           path: '/login',
