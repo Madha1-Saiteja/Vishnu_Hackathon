@@ -13,6 +13,7 @@ from .utils import (
     generate_medical_notes, 
     generate_pdf, 
     process_document, 
+    predict_outcome,
     extract_key_info,
     extract_medical_info,  # Add this function to utils.py
     generate_short_notes  # Add this function to utils.py

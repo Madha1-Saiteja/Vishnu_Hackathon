@@ -6,4 +6,5 @@ fpdf==1.7.2
 PyPDF2
 pytesseract
 pillow
+scikit-learn
 PyPDF2
